@@ -110,7 +110,7 @@ def Nomalization(data):
     data = (data - min(data)) / (max(data)-min(data))
     return data
 
-def denoise_wavelet(data):
+def denoise_wav(data):
     w = pywt.Wavelet("db8")
     maxlev = pywt.dwt_max_level(len(data), w.dec_len)
     threshold = 0.04  # Threshold for filtering
@@ -141,7 +141,7 @@ if __name__ == "__main__":
     # # cwt(audio,fs,totalscal,wavename)
     # # dwt(audio,x)
     # dwtc(audio,x)
-    denoise_wavelet(audio)
+    denoise_wav(audio)
     # audio = Nomalization(audio)
     # devoise(audio,x)
 
