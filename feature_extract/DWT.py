@@ -100,8 +100,7 @@ def dwtc(data,x):
     plt.show()
 
 def devoise(data,t):
-    x_denoise = denoise_wavelet(data,method="VisuShrink",
-                                mode="soft",wavelet_levels=3,wavelet="sym8",rescale_sigma="True")
+    x_denoise = denoise_wavelet(data,method="VisuShrink", mode="soft",wavelet_levels=3,wavelet="sym8",rescale_sigma="True")
     plt.figure(figsize=(20,10),dpi=100)
     plt.plot(t, data, 'g')
     plt.plot(t, x_denoise, 'r')
@@ -111,22 +110,38 @@ def Nomalization(data):
     data = (data - min(data)) / (max(data)-min(data))
     return data
 
+def denoise_wavelet(data):
+    w = pywt.Wavelet("db8")
+    maxlev = pywt.dwt_max_level(len(data), w.dec_len)
+    threshold = 0.04  # Threshold for filtering
+    coeffs = pywt.wavedec(data, 'db8', level=maxlev)  # 将信号进行小波分解
+    print(coeffs[0].shape)
+    print(len(coeffs))
+    for i in range(1, len(coeffs)):
+        coeffs[i] = pywt.threshold(coeffs[i], threshold * max(coeffs[i]))  # 将噪声滤波
+
+    training_set_scaled = pywt.waverec(coeffs, 'db8')  # 将信号进行小波重构
+    plt.plot(training_set_scaled, "b--")
+    plt.plot(data,'r--')
+    plt.show()
+
 if __name__ == "__main__":
     # 音频路径
-    path = "../shipEar_classification/cut_data/0/15-1.wav"
+    path = "../ShipsEar/0.wav"
     audio, fs = librosa.load(path, sr=None)
     print(f"信号采样率{fs},信号持续时长{len(audio)/fs}")
     time = len(audio) / fs
     x = np.arange(0, time, 1 / fs)
-    time_plot(audio,fs)
-    frequency(audio,fs)
-    time_frequency(audio,fs)
-    mel_specgram(audio,fs)
-    wavename = 'cgau8'
-    totalscal = 256
-    # cwt(audio,fs,totalscal,wavename)
-    # dwt(audio,x)
-    dwtc(audio,x)
+    # time_plot(audio,fs)
+    # frequency(audio,fs)
+    # time_frequency(audio,fs)
+    # mel_specgram(audio,fs)
+    # wavename = 'cgau8'
+    # totalscal = 256
+    # # cwt(audio,fs,totalscal,wavename)
+    # # dwt(audio,x)
+    # dwtc(audio,x)
+    denoise_wavelet(audio)
     # audio = Nomalization(audio)
     # devoise(audio,x)
 
