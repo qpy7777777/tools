@@ -77,9 +77,9 @@ class ResBlock1(nn.Module):
         output=F.relu(output3)
         return output
 
-class ResNet34(nn.Module):
+class ResCnn(nn.Module):
     def __init__(self):
-        super(ResNet34, self).__init__()
+        super(ResCnn, self).__init__()
         self.conv1 = nn.Sequential(
             nn.Conv1d(in_channels=1, out_channels=64, kernel_size=3, stride=1, padding=1),
             nn.BatchNorm1d(64),
@@ -102,7 +102,7 @@ class ResNet34(nn.Module):
 # blk = Residual(1,3)
 X = torch.rand(4,1,32)
 model = ResNet()
-net = ResNet34()  #torch.Size([4, 128, 8])
+net = ResCnn()  #torch.Size([4, 128, 8])
 
 # Y = blk(X)
 print(model(X).shape)#torch.Size([4, 128, 4])
