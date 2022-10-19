@@ -3,19 +3,17 @@ import numpy as np
 import pylab as pl#导入一个绘图模块，matplotlib下的模块
 import librosa.display
 # 求幅值 乘上后面的2/N得到正确幅值
-audio,fs = librosa.load("test.wav",sr=None)
+audio,fs = librosa.load("../ShpsEar/cut_shipsEar/3.wav",sr=None)
 print(len(audio),fs,len(audio)/fs)
-fft_size=2014
 #np.arange(起点，终点，间隔)产生1s长的取样时间
-t = np.arange(0, 1, 1.0/fs)
-
-xf = np.fft.rfft(audio[:fft_size])/fft_size
+t = np.arange(0, len(audio)/fs, 1.0/fs)
+xf = np.fft.rfft(audio)/len(audio)
 # 利用np.fft.rfft()进行FFT计算，rfft()是为了更方便对实数信号进行变换，
 # 由公式可知/fft_size为了正确显示波形能量
 
 # rfft函数的返回值是N/2+1个复数，分别表示从0(Hz)到sampling_rate/2(Hz)的分。
 #于是可以通过下面的np.linspace计算出返回值中每个下标对应的真正的频率：
-freqs = np.linspace(0, fs//2, fft_size//2 + 1)
+freqs = np.linspace(0, fs//2, len(audio)//2 + 1)
 # 幅值
 amplitude = 20*np.log10(np.clip(np.abs(xf), 1e-20, 1e100))
 # amplitude = 20*np.log10(np.abs(xf))
@@ -25,12 +23,12 @@ amplitude = 20*np.log10(np.clip(np.abs(xf), 1e-20, 1e100))
 #绘图显示结果
 pl.figure(figsize=(8,4))
 pl.subplot(211)
-pl.plot(t[:fft_size], audio[:fft_size])
+pl.plot(t, audio)
 pl.xlabel(u"Time(S)")
-pl.title(u"156.25Hz and 234.375Hz WaveForm And Freq")
+pl.title(u"WaveForm")
 pl.subplot(212)
 # 对频率和幅值作图，xlabel是频率Hz,ylabel是dB
-pl.plot(amplitude)
+pl.plot(freqs,amplitude)
 pl.xlabel(u"Freq(Hz)")
 pl.subplots_adjust(hspace=0.4)
 pl.show()
@@ -69,22 +67,22 @@ pl.show()
 # 功率谱 power spectrum
 # 直接平方
 # """
-ps = np.abs(xf)**2 / fft_size
+ps = np.abs(xf)**2
 ax=plt.subplot(513)
 ax.set_title('direct method')
-plt.plot(20*np.log10(ps[:fft_size//2]))
+plt.plot(freqs,20*np.log10(ps))
 
 """
 相关功谱率 power spectrum using correlate
 间接法
 """
-cor_x = np.correlate(audio[:fft_size], audio[:fft_size], 'same')
-cor_X = np.fft.rfft(cor_x, fft_size)
+cor_x = np.correlate(audio, audio, 'same')
+cor_X = np.fft.rfft(cor_x)/len(audio)
 ps_cor = np.abs(cor_X)
 ps_cor = ps_cor / np.max(ps_cor)
 ax=plt.subplot(514)
 ax.set_title('indirect method')
-plt.plot(20*np.log10(ps_cor))
+plt.plot(freqs,20*np.log10(ps_cor))
 plt.tight_layout()
 plt.show()
 
