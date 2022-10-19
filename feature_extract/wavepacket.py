@@ -1,6 +1,3 @@
-# 创建小波包
-# 小波包能量 - python代码讲解
-# https://blog.csdn.net/m0_47410750/article/details/125944236
 import pywt
 import librosa
 import librosa.display
@@ -47,6 +44,17 @@ import numpy as np
 # print([n.path for n in new_wp.get_leaf_nodes(False)])
 # print([n.path for n in new_wp.get_leaf_nodes(True)])
 
+def frequency(audio,fs):
+    xf = np.fft.rfft(audio) / len(audio)
+    freqs = np.linspace(0, fs // 2, len(audio) // 2 + 1)
+    # 幅值
+    amplitude = 20 * np.log10(np.clip(np.abs(xf), 1e-20, 1e100))
+    # 对频率和幅值作图，xlabel是频率Hz,ylabel是dB
+    plt.plot(freqs, amplitude)
+    plt.xlabel(u"Freq(Hz)")
+    plt.subplots_adjust(hspace=0.4)
+    plt.show()
+
 def time_plot(audio,fs):
     librosa.display.waveplot(audio,fs)
 
@@ -54,13 +62,12 @@ def time_frequency(audio,fs):
     data = librosa.stft(audio)
     librosa.display.specshow(librosa.amplitude_to_db(abs(data)),x_axis="time",
                              y_axis='hz',sr=fs)
-# Approximation and detail coefficients.
-#正则化
-def Normazition(data):
-    return (data-min(data)) / (max(data)-min(data))
 
-path = "../shipEar_classification/cut_data/4/81-1.wav"
+path = "../ShpsEar/cut_shipsEar/0.wav"
 audio,fs = librosa.load(path,sr=None)
+print(fs)
+frequency(audio,fs)
+
 cA,cD = pywt.dwt(audio,wavelet="db38", mode='smooth')
 y1 = pywt.idwt(cA,None,wavelet="db38", mode='smooth')
 y2 = pywt.idwt(None,cD,wavelet="db38", mode='smooth')
@@ -82,8 +89,6 @@ for i in range(1, cols * rows + 1):
     time_plot(y_plot[i - 1],fs)
     plt.title(title_plot[i - 1])
     plt.tight_layout()
-# plt.show()
-# https://zhuanlan.zhihu.com/p/494060193
 #根据频段频率（freq）进行排序
 wp = pywt.WaveletPacket(data=audio, wavelet='db6',mode='symmetric',maxlevel=13) #选用db1小波，分解层数为3
 #根据频段频率（freq）进行排序
@@ -178,13 +183,13 @@ def wpd_plt(signal, n):
             plt.tight_layout()
             plt.plot(map[re[j - 1]])  # 列表从0开始
 
-wpd_plt(signal=audio, n=3)
+# wpd_plt(signal=audio, n=3)
 
 # 绘制小波包能量图
 # wp = pywt.WaveletPacket(data=audio, wavelet='db6',mode='symmetric')
 # print(f"wp.maxlevel{wp.maxlevel}")
-wp = pywt.WaveletPacket(data=audio, wavelet='db6',mode='symmetric',maxlevel=3) #选用db1小波，分解层数为3
-n = 3
+wp = pywt.WaveletPacket(data=audio, wavelet='db6',mode='symmetric',maxlevel=4) #选用db1小波，分解层数为3
+n = 4
 re = []  #第n层所有节点的分解系数
 for i in [node.path for node in wp.get_level(n, 'freq')]:
     re.append(wp[i].data)
@@ -200,7 +205,7 @@ plt.figure(figsize=(10, 7), dpi=80)
 # 再创建一个规格为 1 x 1 的子图
 # plt.subplot(1, 1, 1)
 # 柱子总数
-N = 8
+N = 16
 values = energy
 # 包含每个柱子下标的序列
 index = np.arange(N)
@@ -215,7 +220,9 @@ plt.ylabel('Wavel energy')
 # 添加标题
 plt.title('Cluster Distribution')
 # 添加纵横轴的刻度
-plt.xticks(index, ('7', '8', '9', '10', '11', '12', '13', '14'))
+plt.xticks(index, ('15', '16', '17', '18', '19', '20', '21', '22',
+                   '23', '24', '25', '26', '27', '28', '29', '30'))
+# plt.xticks(index, ('7', '8', '9', '10', '11', '12', '13', '14'))
 # plt.yticks(np.arange(0, 10000, 10))
 # 添加图例
 plt.legend(loc="upper right")

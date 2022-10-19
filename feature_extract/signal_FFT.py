@@ -3,7 +3,7 @@ import numpy as np
 import pylab as pl#导入一个绘图模块，matplotlib下的模块
 import librosa.display
 # 求幅值 乘上后面的2/N得到正确幅值
-audio,fs = librosa.load("../ShpsEar/cut_shipsEar/3.wav",sr=None)
+audio,fs = librosa.load("../ShpsEar/cut_shipsEar/0.wav",sr=None)
 print(len(audio),fs,len(audio)/fs)
 #np.arange(起点，终点，间隔)产生1s长的取样时间
 t = np.arange(0, len(audio)/fs, 1.0/fs)
