@@ -63,10 +63,10 @@ def time_frequency(audio,fs):
     librosa.display.specshow(librosa.amplitude_to_db(abs(data)),x_axis="time",
                              y_axis='hz',sr=fs)
 
-path = "../ShpsEar/cut_shipsEar/0.wav"
+path = "../ShpsEar/cut_shipsEar/2.wav"
 audio,fs = librosa.load(path,sr=None)
 print(fs)
-frequency(audio,fs)
+# frequency(audio,fs)
 
 cA,cD = pywt.dwt(audio,wavelet="db38", mode='smooth')
 y1 = pywt.idwt(cA,None,wavelet="db38", mode='smooth')
@@ -77,18 +77,18 @@ y_plot = [audio,y1,y2,y3]
 title_plot = ["original","appro","detail","construct"]
 figure = plt.figure(figsize=(12, 8))
 cols,rows=2,2
-for i in range(1, cols * rows + 1):
-    figure.add_subplot(rows, cols, i)
-    time_frequency(y_plot[i - 1],fs)
-    plt.title(title_plot[i - 1])
-    plt.tight_layout()
-# plt.show()
-figure2 = plt.figure(figsize=(12, 8))
-for i in range(1, cols * rows + 1):
-    figure2.add_subplot(rows, cols, i)
-    time_plot(y_plot[i - 1],fs)
-    plt.title(title_plot[i - 1])
-    plt.tight_layout()
+# for i in range(1, cols * rows + 1):
+#     figure.add_subplot(rows, cols, i)
+#     time_frequency(y_plot[i - 1],fs)
+#     plt.title(title_plot[i - 1])
+#     plt.tight_layout()
+# # plt.show()
+# figure2 = plt.figure(figsize=(12, 8))
+# for i in range(1, cols * rows + 1):
+#     figure2.add_subplot(rows, cols, i)
+#     time_plot(y_plot[i - 1],fs)
+#     plt.title(title_plot[i - 1])
+#     plt.tight_layout()
 #根据频段频率（freq）进行排序
 wp = pywt.WaveletPacket(data=audio, wavelet='db6',mode='symmetric',maxlevel=13) #选用db1小波，分解层数为3
 #根据频段频率（freq）进行排序
